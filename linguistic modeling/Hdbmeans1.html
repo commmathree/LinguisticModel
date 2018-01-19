@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<style>
+
+.domain {
+  display: none;
+}
+   circle {
+        stroke-opacity: 1;
+        fill-opacity: 0.1;
+        stroke-width: 0.5px;
+    }
+
+    circle:hover{
+        stroke: red;
+    }
+
+#verbatims {
+  font-family: Roboto Mono;
+  font-size: 10px; 
+  color: black;
+  background: rgba(255, 255, 255, 0.8);
+
+}
+
+
+.tip {
+  background-color: hsla(0,0%,100%,.9);
+  padding: 1px;
+  border-radius: 1px;
+  font-size: 1em;
+  width: 10;
+   text-align: center;
+   font-family: Roboto Mono;
+}
+
+.tip:first-letter {
+    text-transform: uppercase;
+}
+
+.welle {
+  font-family: Roboto Mono;
+  font-size: 12px;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  overflow: hidden;
+  height: 6.2em;
+  transition: height 5.5s;
+  -webkit-transition: height 5.5s;
+  text-align: left;
+  text-overflow: ellipsis;
+  padding: 10px !important;;
+  border-radius: 0px;
+  margin-bottom: 5px !important;
+   margin-top: 5px !important;
+  }
+
+.welle:hover {
+  overflow: initial;
+  height: auto;
+  min-height: 6.2em;
+  background-color: rgba(240, 240, 240, 0.8) !important;
+}
+.verbatimsbay {
+  display:block;
+  position: relative; 
+
+  width: 100%;
+  height: 1000px;
+  overflow: scroll;
+}
+
+h2{
+    font-family: Inconsolata !important;
+  text-align: center;
+  font-size: 18px !important; 
+    position: relative; 
+    margin-top: 0px !important;;
+    margin-bottom: 0px !important;;
+}
+
+h3{
+  font-family: Roboto Mono !important;
+  text-align: center;
+  font-size: 24 !important; 
+    position: relative;      
+    margin-top: 0px !important;;
+    margin-bottom: 0px !important;;
+}
+
+h3:first-letter {
+    text-transform: uppercase;
+}
+
+hr {
+      border-top: 3px solid black !important;;
+}
+
+
+.highlight {
+  background: black;
+    color: white;
+    font-weight: bold;
+    font-size: 12px; 
+
+}
+
+.table { 
+ font-family: Roboto Mono;
+  text-align: left;
+  font-size: 14px; 
+  display:block;
+  position: relative; 
+  height: 1000px !important;
+  overflow: scroll!important;
+  border-style : hidden!important;
+}
+
+.fixed-table-container{
+border-style : hidden!important;
+}
+
+td {
+  padding: 1px !important;
+
+}
+
+
+table, thead, th, td {
+   
+   border-style : hidden!important;
+
+}
+
+table :first-letter {
+    text-transform: uppercase;
+}
+
+svg {
+  opacity: 1;
+    position: absolute;
+}
+
+</style>
+
+<div class="row"><h3 id="headline">Word Selected</h3><h2 id="total">Total</h2> 
+  <div class="col-md-3" style="text-align:center"> <span class='highlight'> &nbsp; What consumers are talking about goes here. &nbsp;</span></div>
+ <div class="col-md-6" style="text-align:center"><span class='highlight'> &nbsp;This is the main diagram click on a word to bring up its Verbatim.&nbsp;</span></div>
+<div class="col-md-3" style="text-align:center"><span class='highlight'>&nbsp;This shows other words in the same group as the one you clicked.&nbsp;</span></div>
+</div>
+
+<div class="row">
+     <svg width="800" height="1000"></svg>
+   <div class="col-md-3" id="verbatims">  <h3 id="verbatimbaytitle"> Verbatims: </h3>
+    <hr>
+        <div class='verbatimsbay'></div>
+        </div>
+        <div class="col-md-6">
+          <div class="wordlabel"></div>
+        </div>
+        <div class="col-md-3" id="verbatims"> <h3 id="tablebaytitle"> Group: </h3>
+           <hr>
+        <table id="table" class="table" cellspacing="0" cellpadding="0" border="0">
+        <thead>
+            <tr>
+                <th data-field="id" > Word</th>
+                <th data-field="size"> Frequency</th>
+            </tr>
+        </thead>
+    </table>
+        </div>
+
+
+
+<script src="d3.v4.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
+ <link href="https://fonts.googleapis.com/css?family=Roboto Mono" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+<script src="https://d3js.org/d3-contour.v1.min.js"></script>
+<script>
+
+
+
+var svg = d3.select("svg")
+ .attr("width", "100%")
+       .attr("height", "90%"),
+    margin = 20,
+    diameter = 1000,
+    g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+var word = "monster"
+var word = "Group 1"
+var sortdata = []
+
+
+var color1 = d3.scaleLinear(d3.interpolateHcl)
+.range(['white','red'])
+.domain([0,500]);
+
+var color = d3.scaleOrdinal()
+.range(["#009392","#39b185",'#9ccb86',"#2887a1",'#eeb479',"#e88471","#cf597e"]);
+
+ var tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "tip")
+      .style("position", "fixed")
+      .style("z-index", "20")
+      .style("visibility", "hidden");
+
+var pack = d3.pack()
+    .size([diameter - margin, diameter - margin])
+    .padding(6);
+
+d3.csv("flareflare 2.csv", function(error, data) {
+  if (error) throw error;
+    d3.csv("furniture.txt", function(verbatim) {
+
+vData = d3.stratify()(data);
+var vLayout = d3.pack().size([diameter - margin, diameter - margin]).padding(6);
+
+ var root = d3.hierarchy(vData).sum(function (d) { return d.data.size; });
+
+  var focus = root,
+      nodes = vLayout(root).descendants(),
+      view;
+
+     vLayout(root);
+
+  var circle = g.selectAll("circle")
+    .data(nodes)
+    .enter().append("circle")
+      .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+
+       .attr('fill', function (d) { return color(d.data.data.color) ; })
+            .attr('stroke', function (d) { return color(d.data.data.color) ; })
+      // .style("fill", function(d) { return d.children ? color(d.depth) : null; })
+      // .style("fill", function(d) { return d.data.color })
+      .attr('opacity', function(d) { return (d.depth/3)})
+          .on('mouseover', function (d) {
+        document.getElementById("headline").innerHTML = d.data.data.id +" "+d.parent.data.id;
+        document.getElementById("total").innerHTML =  d.data.data.size+" total";
+        d3.select('#headline').style('color', color(d.data.data.color));
+        var wordkmeans= d.parent.data.id
+        word = d.data.data.id
+        group = d.parent.data.id
+        var setdata = data.filter( function(d) { return d.parentId === wordkmeans});
+        sortdata = setdata.sort(function(a, b){return b["size"]-a["size"]});
+    
+        tooltip
+                .style("left", d3.event.pageX - 50 + "px")
+              .style("top", d3.event.pageY - 70 + "px")
+                .html("<div class='key'>" + d.data.data.id + "</div><div class='value'>" +d.data.data.size+" </div>")
+                .style("color", color(d.data.data.color))
+                .style("visibility", "visible");
+      })
+      .on('mouseout', function (d) {
+         document.getElementById("headline").innerHTML = "word"
+         document.getElementById("total").innerHTML = "total"
+         d3.select('#headline').style('color', 'black');
+        
+      })
+           .on('click', function (d) {
+        d3.selectAll('.welle').remove()
+         $('#table').bootstrapTable("destroy")
+        d3.select('#table').style('color', color(d.data.data.color));
+        d3.select('#verbatimbaytitle').style('color', color(d.data.data.color))
+        updatetext()
+        highlighter()
+        tableupdate ()
+        if (d.data.data.id =='ikea'){d3.selectAll('circle').attr('stroke',function (d) { return color1(d.data.data.ikeaindex) ; }).attr('fill', function(d){return color1(d.data.data.ikeaindex)})}else{d3.selectAll('circle').attr('stroke',function (d) { return color(d.data.data.color) ; }).attr('fill', function(d){return color(d.data.data.color)})}
+        if (focus !== d) zoom(d), d3.event.stopPropagation(); 
+      });
+
+      circle
+.exit()
+.remove();
+
+ var node = g.selectAll("circle,text");
+
+  svg
+      .style("background", 'white')
+      .on("click", function() { zoom(root); });
+
+  zoomTo([root.x, root.y, root.r * 2 + margin]);
+
+  function zoom(d) {
+    var focus0 = focus; focus = d;
+
+    var transition = d3.transition()
+        .duration(d3.event.altKey ? 7500 : 750)
+        .tween("zoom", function(d) {
+          var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+          return function(t) { zoomTo(i(t)); };
+        });
+
+    transition.selectAll("text")
+      .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+        .style("fill-opacity", function(d) { return d.parent === focus ? 0.7 : 0; })
+        .on("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
+        .on("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
+  }
+
+  function zoomTo(v) {
+    var k = diameter / v[2]; view = v;
+    node.attr("transform", function(d) { 
+      return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
+    circle.attr("r", function(d) { 
+      return d.r * k; });
+  }
+
+
+
+     function updatetext() {
+
+
+     
+
+      document.getElementById("verbatimbaytitle").innerHTML = word.replace(/\_/g," ")
+
+      var textfield =  d3.select('.welle')
+
+      var testword = word.replace(/\_/g," ");
+
+      var newverbatim = verbatim.filter( function(d) { return d.body.match(new RegExp(testword, 'i'))}).slice(0,45);
+
+    // var verbatims = textfield.selectAll(".verbatims")
+    //             .data(newverbatim);
+
+      
+
+for(var x=0; x<newverbatim.length; x++){
+    $('.verbatimsbay').append('<div class="welle">' + newverbatim[x].body + '</div>');
+}
+     
+     // verbatims
+     //  .enter()
+     //  .append('text')
+     //  .merge(verbatims)
+     //  .attr('class', 'verbatims')
+     //  .text(function (d) { return "..." +d.body+ "\r\n"})
+
+   
+}
+
+function highlighter () {
+   
+$.extend($.expr[':'], {
+  'containsi': function(elem, i, match, array)
+  {
+    return (elem.textContent || elem.innerText || '').toLowerCase()
+    .indexOf((match[3] || "").toLowerCase()) >= 0;
+  }
+});
+
+var search = word.replace(/\_/g," ");
+
+    $(".welle:containsi("+search+")").each(function () {
+        var regex = new RegExp(search,'gi');
+        $(this).html($(this).text().replace(regex, "<span class='highlight'>&nbsp;" +search+ "&nbsp;</span>"));
+    });
+
+
+
+;
+}
+
+function tableupdate () {
+document.getElementById("tablebaytitle").innerHTML = "Group" + " " + group
+  $(function () {
+    $('#table').bootstrapTable({
+
+
+        data: sortdata
+    });
+});
+}   
+
+
+})
+});
+
+</script>
